@@ -1,6 +1,6 @@
 ALX Project - Web Infrastructure Design
 
-![Image of a simple web stack](https://ibb.co/X3hmHbf)
+![Image of a simple web stack](0-simple_web_stack.jpg)
 
 Task 0: Definitions and Explanations
 1. Server
