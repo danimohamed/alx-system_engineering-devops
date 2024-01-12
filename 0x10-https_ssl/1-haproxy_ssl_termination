@@ -7,7 +7,7 @@ global
         user haproxy
         group haproxy
         daemon
-        ssl-dh-param-file /etc/haproxy/dhparams.pem
+
         # Default SSL material locations
         ca-base /etc/ssl/certs
         crt-base /etc/ssl/private
@@ -16,7 +16,7 @@ global
         ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
         ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
         ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
+        ssl-dh-param-file /etc/haproxy/dhparams.pem
 defaults
         log     global
         mode    http
@@ -32,18 +32,10 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-
 listen myserver
         bind *:80
+        bind *:443 ssl crt /etc/haproxy/certs/www.mohameddani.tech.pem
+        redirect scheme https if !{ ssl_fc }
         balance roundrobin
         server 366883-web-1 54.146.10.116:80 check
         server 366883-web-2 54.209.206.165:80 check
-
-bind *:443 ssl crt /etc/haproxy/certs/domain.pem
-redirect scheme https if !{ ssl_fc }
-
-frontend http_front
-        bind *:80
-        bind *:443 ssl crt /etc/haproxy/certs/www.mohameddani.tech.pem
-        redirect scheme https code 301 if !{ ssl_fc }
-        default_backend http_back
